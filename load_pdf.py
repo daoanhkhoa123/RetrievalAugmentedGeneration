@@ -85,7 +85,7 @@ def _remove_short_chunk(pages_and_chunks: List[Dict], min_word_length: int = 30)
 def _embedd(pages_and_chunks: List[Dict]) -> List[Dict]:
 
     embedding_model = SentenceTransformer("all-mpnet-base-v2", device=DEVICE)
-    for item in pages_and_chunks:
+    for item in tqdm(pages_and_chunks):
         item["embedd"] = embedding_model.encode(item["sentence_chunk"])
 
     return pages_and_chunks

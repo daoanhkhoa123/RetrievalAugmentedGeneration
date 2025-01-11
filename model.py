@@ -48,7 +48,7 @@ def get_modelid_quantconfig() -> tuple[str, bool]:
         use_quantization_config = False
         model_id = "google/gemma-7b-it"
 
-    print("You are using", model_id,
+    print("Recommend model:", model_id,
           "Use quantization config is", use_quantization_config)
     return model_id, use_quantization_config
 
@@ -63,7 +63,7 @@ def get_fask_attention():
     return attn_implementation
 
 
-def prepare_model(name=None, use_quantization=None) -> tuple[AutoTokenizer, AutoModelForCausalLM]:
+def prepare_model(name=None, use_quantization=None, **kwargs) -> tuple[AutoTokenizer, AutoModelForCausalLM]:
     """ Return tokenizer and llm model"""
     model_id, use_quantization = get_modelid_quantconfig()
     model_id = model_id if name is None else name
@@ -78,7 +78,7 @@ def prepare_model(name=None, use_quantization=None) -> tuple[AutoTokenizer, Auto
                                                      torch_dtype=torch.float16,
                                                      quantization_config=quantization_config,
                                                      low_cpu_mem_usage=False,
-                                                     attn_implementation=attn_implementation)
+                                                     attn_implementation=attn_implementation, **kwargs)
 
     if not quantization_config:
         llm_model.to(DEVICE)
