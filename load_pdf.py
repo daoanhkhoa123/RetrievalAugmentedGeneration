@@ -95,9 +95,10 @@ def _save_embed(pages_and_chunks: List[Dict], name: str = SAVE_NAME) -> None:
     pd.DataFrame(pages_and_chunks).to_csv(SAVE_PATH, index=False)
 
 
-def embed_pdf(pdf_path: str) -> None:
+def embed_pdf(pdf_name: str) -> None:
     print("Embedding pdf file...")
-    pages_and_texts = _open_read_pdf(pdf_path)
+    pdf_name = ospathjoin("data_set", pdf_name)
+    pages_and_texts = _open_read_pdf(pdf_name)
 
     pages_and_texts = _split_sentence(pages_and_texts)
     pages_and_texts = _split_chunk(pages_and_texts)
@@ -119,10 +120,11 @@ def load_embed(name: str = SAVE_NAME) -> tuple[dict, torch.Tensor]:
     embedding = torch.tensor(np.array(
         df["embedd"].tolist()), dtype=torch.float32).to(DEVICE)
 
-    print(f"Pdf loaded!: {len(pages_and_chunks)} pages and {embedding.shape} embedding tensor!")
+    print(f"Pdf loaded!: {len(pages_and_chunks)} pages and {
+          embedding.shape} embedding tensor!")
     return pages_and_chunks, embedding
 
 
 if __name__ == "__main__":  # test
-    embed_pdf(r"data_set\Fast_Edge_Based_Stereo_Matching_Algorith.pdf")
+    embed_pdf(r"Fast_Edge_Based_Stereo_Matching_Algorith.pdf")
     pg_a_chu, embedding = load_embed()
