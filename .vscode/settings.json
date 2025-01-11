@@ -1,0 +1,53 @@
+{
+  "python.defaultInterpreterPath": "D:\\anaconda3\\envs\\pylang\\python.exe",
+  "python.terminal.activateEnvInCurrentTerminal": true,
+  "python.terminal.activateEnvironment": true,
+  "editor.formatOnSave": true,
+  "prettier.bracketSameLine": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8",
+    "editor.formatOnType": true
+  },
+  "C_Cpp.default.compilerPath": "D:\\MinGW\\bin\\gcc.exe",
+  "cmake.configureOnOpen": true,
+  "workbench.startupEditor": "none",
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnPaste": true,
+  "editor.defaultFormatter": "ms-python.autopep8",
+  "editor.formatOnType": true,
+  "launch": {
+    "configurations": []
+  },
+  "cmake.options.statusBarVisibility": "visible",
+  "remote.autoForwardPortsSource": "hybrid",
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell"
+    },
+    "Command Prompt": {
+      "path": [
+        "${env:windir}\\Sysnative\\cmd.exe",
+        "${env:windir}\\System32\\cmd.exe"
+      ],
+      "args": [],
+      "icon": "terminal-cmd"
+    },
+    "Git Bash": {
+      "source": "Git Bash"
+    },
+    "Windows PowerShell": {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+    }
+  },
+  "files.autoSave": "afterDelay",
+  "C_Cpp.renameRequiresIdentifier": false,
+  "C_Cpp.vcFormat.indent.caseContentsWhenBlock": true,
+  "editor.accessibilitySupport": "on",
+  "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools"
+  }
+}
