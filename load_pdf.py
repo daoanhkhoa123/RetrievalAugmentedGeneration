@@ -92,8 +92,7 @@ def _embedd(pages_and_chunks: List[Dict]) -> List[Dict]:
 
 
 def _save_embed(pages_and_chunks: List[Dict], name: str = SAVE_NAME) -> None:
-    pd.DataFrame(pages_and_chunks).to_csv(SAVE_PATH, index=False)
-
+    pd.DataFrame(pages_and_chunks).to_csv(SAVE_PATH, index=False, escapechar='\\')
 
 def embed_pdf(pdf_name: str) -> None:
     print("Embedding pdf file...")
@@ -112,7 +111,7 @@ def embed_pdf(pdf_name: str) -> None:
 
 def load_embed(name: str = SAVE_NAME) -> tuple[dict, torch.Tensor]:
     """ Return pages and chunks dictionary, and embedding tensor"""
-    df = pd.read_csv(SAVE_PATH)
+    df = pd.read_csv(SAVE_PATH, escapechar='\\')
     df["embedd"] = df["embedd"].apply(
         lambda x: np.fromstring(x.strip("[]"), sep=" "))
 
