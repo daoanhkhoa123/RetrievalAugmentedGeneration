@@ -120,8 +120,7 @@ def load_embed(name: str = SAVE_NAME) -> tuple[dict, torch.Tensor]:
     embedding = torch.tensor(np.array(
         df["embedd"].tolist()), dtype=torch.float32).to(DEVICE)
 
-    print(f"Pdf loaded!: {len(pages_and_chunks)} pages and {
-          embedding.shape} embedding tensor!")
+    print(f"Pdf loaded!: {len(pages_and_chunks)} pages and {embedding.shape} embedding tensor!")
     return pages_and_chunks, embedding
 
 
