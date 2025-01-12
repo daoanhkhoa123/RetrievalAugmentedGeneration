@@ -1,5 +1,6 @@
-from time import perf_counter as timer
 import torch
+from tqdm import tqdm
+from time import perf_counter as timer
 from sentence_transformers import util, SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers.utils import is_flash_attn_2_available
@@ -26,30 +27,26 @@ def get_modelid_quantconfig() -> tuple[str, bool]:
     gpu_memory_gb = check_gpu_memory()
 
     if gpu_memory_gb < 5.1:
-        print(f"Your available GPU memory is {
-              gpu_memory_gb}GB, you may not have enough memory to run a Gemma LLM locally without quantization.")
+        print(f"Your available GPU memory is {gpu_memory_gb}GB, you may not have enough memory to run a Gemma LLM locally without quantization.")
         use_quantization_config = True
 
     elif gpu_memory_gb < 8.1:
-        print(f"GPU memory: {
-              gpu_memory_gb} | Recommended model: Gemma 2B in 4-bit precision.")
+        print(f"GPU memory: {gpu_memory_gb} | Recommended model: Gemma 2B in 4-bit precision.")
         use_quantization_config = True
         model_id = "google/gemma-2b-it"
 
     elif gpu_memory_gb < 19.0:
-        print(f"GPU memory: {
-              gpu_memory_gb} | Recommended model: Gemma 2B in float16 or Gemma 7B in 4-bit precision.")
+        print(f"GPU memory: {gpu_memory_gb} | Recommended model: Gemma 2B in float16 or Gemma 7B in 4-bit precision.")
         use_quantization_config = False
         model_id = "google/gemma-2b-it"
 
     elif gpu_memory_gb > 19.0:
-        print(f"GPU memory: {
-              gpu_memory_gb} | Recommend model: Gemma 7B in 4-bit or float16 precision.")
+        print(f"GPU memory: {gpu_memory_gb} | Recommend model: Gemma 7B in 4-bit or float16 precision.")
         use_quantization_config = False
         model_id = "google/gemma-7b-it"
 
     print("Recommend model:", model_id,
-          "Use quantization config is", use_quantization_config)
+          "\nUse quantization config is", use_quantization_config)
     return model_id, use_quantization_config
 
 
@@ -62,6 +59,9 @@ def get_fask_attention():
     print("Your fask attention is", attn_implementation)
     return attn_implementation
 
+
+import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 def prepare_model(name=None, use_quantization=None, **kwargs) -> tuple[AutoTokenizer, AutoModelForCausalLM]:
     """ Return tokenizer and llm model"""
@@ -81,9 +81,17 @@ def prepare_model(name=None, use_quantization=None, **kwargs) -> tuple[AutoToken
                                                      attn_implementation=attn_implementation, **kwargs)
 
     if not quantization_config:
+        llm_model = llm_model.to_empty()  # Use to_empty() instead of to()
         llm_model.to(DEVICE)
 
+    # Assign items in the state dictionary to their corresponding key in the module
+    state_dict = torch.load(f"{model_id}/pytorch_model.bin")
+    for name, param in tqdm(state_dict.items()):
+        if name in llm_model.state_dict():
+            llm_model.state_dict()[name].copy_(param)
+            
     return tokenizer, llm_model
+
 
 
 def _retrieve_relevant_resources(query: str,
@@ -99,8 +107,7 @@ def _retrieve_relevant_resources(query: str,
     end_time = timer()
 
     if print_time:
-        print(f"[INFO] Time taken to get scores on {
-              len(embeddings)} embeddings: {end_time-start_time:.5f} seconds.")
+        print(f"[INFO] Time taken to get scores on {len(embeddings)} embeddings: {end_time-start_time:.5f} seconds.")
 
     scores, indices = torch.topk(input=dot_scores, k=n_resources_to_return)
 
